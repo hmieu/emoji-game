@@ -1,4 +1,4 @@
-# Emoji → Emoticon
+# Emoji to Emoticon
 
 A tiny personality game: match the emoji to the old-school emoticon and collect points.
 
