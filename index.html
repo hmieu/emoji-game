@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji → Emoticon</title>
+  <style>
+    :root{
+      --bg:#fff7fb;
+      --card:#fffdfd;
+      --text:#4b3045;
+      --sub:#876f82;
+      --line:#efd9e8;
+      --pink:#e99abd;
+      --lav:#bca9e9;
+      --accent:#d983ad;
+      --shadow:0 14px 35px rgba(174,116,151,.14);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+    }
+
+    .game-card{
+      width:min(520px,100%);
+      padding:36px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      text-align:center;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:32px;
+      background:linear-gradient(90deg,var(--pink),var(--lav));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .description{
+      margin:0 0 28px;
+      color:var(--sub);
+      line-height:1.6;
+    }
+
+    .emoji{
+      font-size:76px;
+      margin:12px 0 18px;
+    }
+
+    .prompt{
+      color:var(--sub);
+      margin-bottom:12px;
+    }
+
+    .answer-row{
+      display:flex;
+      gap:8px;
+    }
+
+    input{
+      flex:1;
+      min-width:0;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:white;
+      color:var(--text);
+      font-size:16px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:var(--accent);
+    }
+
+    button{
+      padding:12px 18px;
+      border:1px solid var(--accent);
+      border-radius:12px;
+      background:var(--accent);
+      color:white;
+      cursor:pointer;
+      font-size:15px;
+    }
+
+    button:hover{
+      opacity:.9;
+    }
+
+    .feedback{
+      min-height:28px;
+      margin-top:16px;
+      color:var(--accent);
+    }
+
+    .score{
+      margin-top:8px;
+      color:var(--sub);
+      font-size:14px;
+    }
+
+    .credit{
+      margin-top:28px;
+      font-size:12px;
+      color:var(--sub);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="game-card">
+    <h1>emoji → emoticon</h1>
+    <p class="description">
+      Match the emoji to the old-school emoticon and collect points.
+    </p>
+
+    <div class="game">
+      <div class="emoji" id="gameEmoji">😭</div>
+
+      <div class="prompt">type the matching emoticon</div>
+
+      <div class="answer-row">
+        <input
+          id="answer"
+          aria-label="Your emoticon answer"
+          autocomplete="off"
+          placeholder=":("
+        >
+        <button id="submitAnswer">check</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <div class="score" id="score">score: 0</div>
+    </div>
+
+    <div class="credit">Built by Maryam Hassan</div>
+  </main>
+
+  <script>
+    // Original Emoji → Emoticon game logic from the portfolio
+    const questions = [
+      ['😭', ":'("],
+      ['😊', ':)'],
+      ['😉', ';)'],
+      ['😎', '8)'],
+      ['😢', ':('],
+      ['😂', ":'D"],
+      ['😡', '>:('],
+      ['😴', '-_-']
+    ];
+
+    let gameIndex = Math.floor(Math.random() * questions.length);
+    let score = 0;
+
+    const emojiEl = document.getElementById('gameEmoji');
+    const answerEl = document.getElementById('answer');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+
+    function showQuestion() {
+      emojiEl.textContent = questions[gameIndex][0];
+      answerEl.value = '';
+      answerEl.focus();
+    }
+
+    function checkAnswer() {
+      const expected = questions[gameIndex][1].trim();
+      const actual = answerEl.value.trim();
+
+      if (!actual) return;
+
+      if (actual === expected) {
+        score++;
+        feedbackEl.textContent = '/ correct! +1';
+      } else {
+        feedbackEl.textContent = `not quite / answer: ${expected}`;
+      }
+
+      scoreEl.textContent = `score: ${score}`;
+
+      setTimeout(() => {
+        gameIndex = (gameIndex + 1) % questions.length;
+        showQuestion();
+        feedbackEl.textContent = '';
+      }, 850);
+    }
+
+    document
+      .getElementById('submitAnswer')
+      .addEventListener('click', checkAnswer);
+
+    answerEl.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+
+    showQuestion();
+  </script>
+</body>
+</html>
